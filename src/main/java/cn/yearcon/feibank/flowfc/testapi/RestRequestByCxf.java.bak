@@ -1,0 +1,411 @@
+package com.my.feibank.flowfc.testapi;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.ws.rs.core.Response;
+
+import org.apache.cxf.jaxrs.client.WebClient;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.my.feibank.flowfc.tools.AESUtil;
+import com.my.feibank.flowfc.tools.FlowConstants;
+import com.my.feibank.flowfc.tools.OpenCardResp;
+import com.my.feibank.flowfc.tools.OpenCardRespChild;
+
+public class RestRequestByCxf {
+	private static final Logger log = Logger.getLogger(RestRequestByCxf.class.getName());
+
+	private static ObjectMapper objectMapper = new ObjectMapper();
+
+	private static boolean formateOutputJson = true;
+
+	public static void main(String[] args) throws IOException {
+		
+		openCard();
+		
+	}
+
+
+	private static String userName = "test111";
+	private static String userPass = "testaaa";
+	private static String key = "testaaa";
+	private static String url = "http://www.hzfacaiyu.com:8585/sms/openCard"; 
+
+	private static WebClient createClient(String uri) {
+		WebClient client = WebClient.create(uri);
+		// 非常重要
+		client.type("application/json;charset=UTF-8");
+		return client;
+	}
+	
+
+
+	/**
+	 * 短信开卡请求
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public static JsonNode openCard() throws IOException {
+		WebClient client = createClient(uri);
+
+		client.type("application/json;charset=UTF-8");
+		String tradeNo = AESUtil.getTradeNo();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("tradeNo", tradeNo);// 必填参数
+		parameters.put("userName", userName);// 必填参数
+		parameters.put("userPassword", userPass);// 必填参数
+		
+		parameters.put("phones", "13567148561");
+		parameters.put("content", "This is a Test sms!这是一条测试短信");
+		parameters.put("etnumber", "");
+		String sign = AESUtil.encrypt(objectMapper.writeValueAsString(parameters),key);
+		parameters.put("sign", sign);
+
+		parameters.put("userPassword",AESUtil.MD5(userPass));// 必填参数
+		String body = objectMapper.writerWithDefaultPrettyPrinter()
+				.writeValueAsString(parameters);
+		printJsonString("开卡请求", body);
+		Response response = client.post(body);
+		return printResult("开卡完成", response);
+	}
+
+	
+
+
+	/**
+	 * 流量开卡请求
+	 * @param Mobile
+	 * @param setProductId
+	 * @param tn
+	 * @return
+	 * @throws IOException
+	 */
+	public static JsonNode openCardFlow(String Mobile,String setProductId,String tn) throws IOException {
+		WebClient client = createClient("http://www.hzfacaiyu.com/flow/openCard");
+
+		String tradeNo = AESUtil.getTradeNo();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("tradeNo", tradeNo);// 必填参数
+		parameters.put("userName", userName);// 必填参数
+		parameters.put("userPassword", userPass);// 必填参数
+		parameters.put("orderId", "1111");
+		parameters.put("phoneNum", "13567148561");
+		parameters.put("cardCode", "10");
+		parameters.put("openType", 1);
+		String sign = AESUtil.encrypt(objectMapper.writeValueAsString(parameters), key);
+		
+		parameters.put("sign", sign);
+		parameters.put("backUrl", "");// 如果设置为“”，parameters.put("backUrl",
+										// "")，则不回调
+		parameters.put("userPassword",
+				AESUtil.MD5(userPass));// 必填参数
+		String body = objectMapper.writerWithDefaultPrettyPrinter()
+				.writeValueAsString(parameters);
+		printJsonString("开卡请求", body);
+		Response response = client.post(body);
+		return printResult("开卡完成", response);
+	}
+
+
+
+
+	
+	/**
+	 * 话费开卡请求
+	 * @param money
+	 * @param phone
+	 * @throws JsonProcessingException 
+	 */
+	public static JsonNode openCardPhoneFee(String money, String phone) throws JsonProcessingException {
+
+			WebClient client = WebClient.create(url);
+			// 非常重要
+			client.type("application/json;charset=UTF-8");
+
+			String tradeNo = AESUtil.getTradeNo();
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("tradeNo", tradeNo);// 必填参数
+			parameters.put("userName", userName);// 必填参数
+			parameters.put("userPassword", userPass);// 必填参数
+			parameters.put("money", "1");
+			parameters.put("phone", "13567148561");
+			String sign = AESUtil.encrypt(
+					objectMapper.writeValueAsString(parameters),
+					key);
+			parameters.put("sign", sign);
+			parameters.put("userPassword",
+					AESUtil.MD5(userPass));// 必填参数
+			String body = objectMapper.writerWithDefaultPrettyPrinter()
+					.writeValueAsString(parameters);
+			printJsonString("开卡请求", body);
+			Response response = client.post(body);
+			return printResult("开卡完成", response);
+	}
+	
+	
+	
+	/**
+	 * 语音开卡
+	 * @param phase
+	 * @param response
+	 * @return
+	 */
+    public static JsonNode openCardVoice() throws IOException{
+    	WebClient client = WebClient.create(url);
+		// 非常重要
+		client.type("application/json;charset=UTF-8");
+
+		String tradeNo = AESUtil.getTradeNo();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("tradeNo", "20160810135905562");// 必填参数
+		parameters.put("userName", userName);// 必填参数
+		parameters.put("userPassword", userPass);// 必填参数
+		/*parameters.put("money", "10");*/
+		parameters.put("code", "584822");
+		parameters.put("caller", "");
+		parameters.put("phone", "13795392433");
+		String sign = AESUtil.encrypt(
+				objectMapper.writeValueAsString(parameters),
+				key);
+		parameters.put("sign", sign);
+		parameters.put("userPassword",
+				AESUtil.MD5(userPass));// 必填参数
+		String body = objectMapper.writerWithDefaultPrettyPrinter()
+				.writeValueAsString(parameters);
+		printJsonString("开卡请求", body);
+		Response response = client.post(body);
+		return printResult("开卡完成", response);
+    }
+
+
+
+
+
+
+
+	private static OpenCardResp printResutO(String phase, Response response) {
+		log.info("\n=== " + phase + " ===");
+
+		try {
+			InputStream stream = (InputStream) response.getEntity();
+			int available = 0;
+			available = stream.available();
+
+			if (available == 0) {
+				log.info("nothing returned, response code: "
+						+ response.getStatus());
+				return null;
+			}
+			Map<Object, Object> cardResp = objectMapper.readValue(stream,
+					Map.class);
+			OpenCardResp respon = new OpenCardResp();
+			if (cardResp != null) {
+				
+				//：{"tradeNo":"20160105092405093330","resCode":"P00000","resMsg":"提交成功","data":{"orderId":"1320160105092405072440","liuliuOrderId":"48920160105092218132708","orderStatus":0,"money":1000000.0}}
+				respon.setRspCode(cardResp.get("resCode").toString());
+				respon.setRspMsg(cardResp.get("resMsg").toString());
+				respon.setTransId(cardResp.get("tradeNo").toString());
+				if ("P00000".equals(cardResp.get("resCode").toString())) {
+					OpenCardRespChild cardRespChild = new OpenCardRespChild();
+					Map<Object, Object> map = (Map) cardResp.get("data");
+					cardRespChild.setChannelOrderId(map.get("liuliuOrderId")
+							.toString());
+					cardRespChild.setOrderId(map.get("orderId").toString());
+					if(map.get("orderStatus").toString().equals("0")){
+						cardRespChild.setOrderStatus("1");
+					}
+					respon.setData(cardRespChild);
+				}else {
+
+					respon.setRspCode("P00001");
+					respon.setRspMsg("提交失败");
+					OpenCardRespChild cardRespChild = new OpenCardRespChild();
+
+					cardRespChild.setChannelOrderId("-1");
+					cardRespChild.setOrderId("-1");
+					cardRespChild.setOrderStatus("5");
+					respon.setData(cardRespChild);
+				}
+			}
+
+			log.info("phase"+objectMapper.writeValueAsString(respon));
+			return respon;
+		} catch (IOException e) {
+			/*log.info("catch an exception: " + e.getMessage(), e);*/
+
+		}
+		return null;
+	}
+	/**
+	 * 获取所有卡品信息
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public static JsonNode getAllCard() throws IOException {
+		WebClient client = createClient(url);
+
+		// 入参采用的方式一：使用Map传输
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		String tradeNo = AESUtil.getTradeNo();
+		parameters.put("tradeNo", tradeNo);// 必填参数
+		parameters.put("userName", userName);// 必填参数
+		parameters.put("userPassword", userPass);// 必填参数
+		// password签名时不能md5加密
+		String sign = AESUtil.encrypt(
+				objectMapper.writeValueAsString(parameters),
+				key);
+		//parameters.put("operatorsType", FlowConstants.OPERATORS_CM);//
+
+		parameters.put("userPassword",
+				AESUtil.MD5(userPass));// 必填参数
+		parameters.put("sign", sign);
+
+		String body = objectMapper.writerWithDefaultPrettyPrinter()
+				.writeValueAsString(parameters);
+		printJsonString("获取所有卡品请求", body);
+		Response response = client.post(body);
+		return printResult("获取所有卡品完成", response);
+	}
+
+	
+
+	/*    *//**
+	 * 根据订单号查询单条订单状态
+	 * 
+	 * @param orderId
+	 * @return
+	 * @throws IOException
+	 */
+	public static JsonNode queryOrderStatus(String orderId) throws IOException {
+		// 注意，订单号参数在url后面
+		WebClient client = createClient("http://www.hzfacaiyu.com/sms/openCard");
+
+		String tradeNo = AESUtil.getTradeNo();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("tradeNo", tradeNo);// 必填参数
+		parameters.put("userName", "apiTest");// 必填参数
+		parameters.put("userPassword", "apiTest1");// 必填参数
+		String sign = AESUtil.encrypt(
+				objectMapper.writeValueAsString(parameters),
+				"STVhtCpQmAFWWKIk");
+		parameters.put("liuliuOrderIds", "111");
+		parameters.put("sign", sign);
+		parameters.put("userPassword",
+				AESUtil.MD5("apiTest1"));// 必填参数
+		String body = objectMapper.writerWithDefaultPrettyPrinter()
+				.writeValueAsString(parameters);
+		printJsonString("根据订单号获取订单状态请求", body);
+		Response response = client.post(body);
+		return printResult("根据订单号获取订单状态请求完成", response);
+	}
+
+	/*
+	 * private static JsonNode getOrderList(String orderIds) throws IOException
+	 * { WebClient client =
+	 * createClient(FlowConstants.GET_BATCH_ORDER_STATUS_URI);
+	 * 
+	 * //入参采用的方式一：使用Map传输 Map<String, Object> parameters = new HashMap<String,
+	 * Object>();
+	 * 
+	 * String transId = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new
+	 * Date())+(int) (Math.random() * (1000 - 100) + 100);
+	 * 
+	 * parameters.put("transId", transId);//必填参数 parameters.put("userCode",
+	 * FlowConstants.default_user_code);//必填参数
+	 * 
+	 * String sign=AESUtil.encrypt(objectMapper.writeValueAsString(parameters),
+	 * FlowConstants.default_md5key );
+	 * 
+	 * parameters.put("orderIds", orderIds);//必填参数，多个orderId用#号分隔，此参数不参与签名处理
+	 * parameters.put("sign", sign);
+	 * 
+	 * String body =
+	 * objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString
+	 * (parameters); printJsonString("按订单号批量查询订单状态请求", body); Response response
+	 * = client.post(body); return printResult("按订单号批量查询订单状态完成", response); }
+	 */
+
+	// 打印发送请求的JSON数据
+	private static void printJsonString(String phase, String json) {
+		System.out.println("\n+++ 发送请求[" + phase + "] +++");
+		System.out.println(json);
+	}
+
+	private static JsonNode printResult(String phase, Response response) {
+		System.out.println("\n=== " + phase + " ===");
+
+		try {
+			InputStream stream = (InputStream) response.getEntity();
+			int available = 0;
+			available = stream.available();
+
+			if (available == 0) {
+				System.out.println("nothing returned, response code: "
+						+ response.getStatus());
+				return null;
+			}
+			JsonNode responseNode = objectMapper.readTree(stream);
+			if (formateOutputJson) {
+				System.out.println(objectMapper
+						.writerWithDefaultPrettyPrinter().writeValueAsString(
+								responseNode));
+			} else {
+				System.out.println(objectMapper
+						.writeValueAsString(responseNode));
+			}
+			return responseNode;
+		} catch (IOException e) {
+			System.err.println("catch an exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
+	// //话费充值
+	
+
+	// //话费充值查询
+	private static void huafeiQuery() {
+
+		try {
+
+			WebClient client = WebClient.create(url);
+			// 非常重要
+			client.type("application/json;charset=UTF-8");
+
+			String tradeNo = AESUtil.getTradeNo();
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("tradeNo", tradeNo);// 必填参数
+			parameters.put("userName", FlowConstants.default_user_name);// 必填参数
+			parameters.put("userPassword", FlowConstants.default_user_pwd);// 必填参数
+			parameters.put("liuliuOrderId", "120151123142403992634");
+			String sign = AESUtil.encrypt(
+					objectMapper.writeValueAsString(parameters),
+					FlowConstants.default_md5key);
+			parameters.put("sign", sign);
+			parameters.put("userPassword",
+					AESUtil.MD5(FlowConstants.default_user_pwd));// 必填参数
+			String body = objectMapper.writerWithDefaultPrettyPrinter()
+					.writeValueAsString(parameters);
+			printJsonString("开卡请求", body);
+			Response response = client.post(body);
+			printResult("开卡完成", response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+
+	
+
+}
