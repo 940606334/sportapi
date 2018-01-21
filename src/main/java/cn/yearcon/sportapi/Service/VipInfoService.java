@@ -212,4 +212,17 @@ public class VipInfoService {
         }
     }
 
+    public JsonResult updateAuthorize(Integer vipid){
+        if(vipid==null){
+            return new JsonResult(0,"请输入vipid");
+        }
+        try {
+            int i=vipMapper.updateAuthorize(vipid);
+            return new JsonResult(i,"修改成功");
+        }catch (Exception e){
+            return new JsonResult(0,e.getMessage());
+        }
+
+    }
+
 }

@@ -3,6 +3,8 @@ package cn.yearcon.sportapi.Service;
 import cn.yearcon.sportapi.entity.CStore;
 import cn.yearcon.sportapi.mapper.CStoreMapper;
 import cn.yearcon.sportapi.util.DistanceUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @Service
 public class StoreService {
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     private CStoreMapper cStoreMapper;
     @Autowired
@@ -26,15 +29,25 @@ public class StoreService {
     public List<CStore> getStoreList(String webid,String coordinate){
         List<CStore> list=(List)redisTemplate.opsForValue().get("getStoreByWebid="+webid);
         if(list!=null){
-            System.out.println("读取缓存中的商店列表");
-            setCStoreList(list,coordinate);
+            logger.info("读取缓存中的商店列表");
+            try {
+                logger.info("获取地理坐标为:"+coordinate);
+                setCStoreList(list,coordinate);
+            }catch (Exception e){
+                logger.info(e.getMessage());
+            }
             return list;
         }
         list=cStoreMapper.findByWebid(webid);
-        System.out.println("商店列表设置缓存10分钟");
+        logger.info("商店列表设置缓存10分钟");
         redisTemplate.opsForValue().set("getStoreByWebid="+webid,list,60*10, TimeUnit.SECONDS);
-        setCStoreList(list,coordinate);
-        return list;
+        logger.info("获取地理坐标为:"+coordinate);
+       try {
+           setCStoreList(list,coordinate);
+       }catch (Exception e){
+           logger.info(e.getMessage());
+       }
+       return list;
     }
     public void setCStoreList(List<CStore> list,String coordinate){
         String[] arr=coordinate.split(",");

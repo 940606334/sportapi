@@ -4,8 +4,6 @@ package cn.yearcon.sportapi.Service;
 import cn.yearcon.sportapi.dao.BillDao;
 import cn.yearcon.sportapi.json.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +33,7 @@ public class BillService {
         }
         List lists=billDao.findByVipid(vipid);
         if(lists.isEmpty()){
-            return new JsonResult(0);
+            return new JsonResult(0,"无消费记录");
         }
         System.out.println("无缓存,设置缓存60秒");
         redisTemplate.opsForValue().set("BillVipid="+vipid,lists,60, TimeUnit.SECONDS);

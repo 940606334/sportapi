@@ -4,6 +4,7 @@ import cn.yearcon.sportapi.entity.Coupon;
 import cn.yearcon.sportapi.entity.Integral;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.Date;
 import java.util.List;
@@ -57,4 +58,7 @@ public interface VipMapper {
             "    ON (a.c_customer_id = c.id)\n" +
             "WHERE b.id = ${vipid} and  a.is_verifyed ='N' AND    a.is_valid='Y' AND  a.isactive='Y'")
     List<Coupon> findCoupon(@Param("vipid")Integer vipid);
+    @Update("update c_client_vip set IS_VERIFY =2,VERIFYDATE =sysdate\n" +
+            "WHERE id=${vipid}")
+    int updateAuthorize(@Param("vipid")Integer vipid);
 }

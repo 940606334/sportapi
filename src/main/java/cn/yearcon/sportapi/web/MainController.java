@@ -65,10 +65,10 @@ public class MainController {
             logger.debug("请输入机构id");
             return new JsonResult(0,"请输入机构id");
         }
-        if(coordinate==null||"".equals(coordinate)){
+        /*if(coordinate==null||"".equals(coordinate)){
             logger.debug("请输入坐标");
             return new JsonResult(0,"请输入坐标");
-        }
+        }*/
         List<CStore> list=storeService.getStoreList(webid,coordinate);
         logger.info(list.toString());
         JsonResult jsonResult=null;
@@ -130,5 +130,14 @@ public class MainController {
         JsonResult jsonResult=smsCodeService.getCheckCode(mobile);
         logger.info(jsonResult.toString());
         return jsonResult;
+    }
+
+    /**
+     * 会员认证
+     * @return
+     */
+    @RequestMapping(value = "vip.authorize")
+    public JsonResult authorizeVip(Integer vipid){
+       return vipInfoService.updateAuthorize(vipid);
     }
 }
