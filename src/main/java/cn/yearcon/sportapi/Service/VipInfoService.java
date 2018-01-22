@@ -195,7 +195,7 @@ public class VipInfoService {
      */
     public JsonResult findCoupon(Integer vipid){
         if(vipid==null){
-            return new JsonResult(0,"请输入vipid");
+            return new JsonResult(0,"会员id为空");
         }
         List<Coupon> coupons=(List<Coupon>) redisTemplate.opsForValue().get("couponByVipid="+vipid);
         if(coupons!=null&&coupons.size()>0){

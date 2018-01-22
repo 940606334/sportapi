@@ -10,11 +10,12 @@ import lombok.Data;
  **/
 @Data
 public class Coupon {
-   private Integer id;//优惠券id
-    private  String v_cus;//机构代码
+    private String vouchers_no;//优惠券号
+    private String v_cus;//机构代码
     private String amt_noles;//满多少可用
-    private String amt_type;//1折扣 2现金
-    private String amtdes;//折扣内容
-    private String amt;//实际值
+    private Double amt_type;//<1折扣 >1现金
+    private Double vou_dis;//折扣内容
+    private String valid_date;//有效期
+
 
 }

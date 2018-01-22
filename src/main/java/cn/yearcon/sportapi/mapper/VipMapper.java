@@ -37,6 +37,7 @@ public interface VipMapper {
     @Select("SELECT a.vouchers_no,\n" +
             "  a.valid_date,\n" +
             "  a.c_vip_id,\n" +
+            "  a.vou_dis,\n" +
             "  (CASE\n" +
             "   WHEN a.amt_acount >0 THEN\n" +
             "     a.amt_acount\n" +
