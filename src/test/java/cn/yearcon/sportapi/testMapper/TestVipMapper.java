@@ -32,4 +32,5 @@ public class TestVipMapper {
             System.out.println(integer);
         }
     }
+
 }

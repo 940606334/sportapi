@@ -183,6 +183,7 @@ public class VipInfoService {
             }
             return new JsonResult(arr[0],msg);
         }catch (Exception e){
+            e.printStackTrace();
             return new JsonResult(0,"门店信息错误");
         }
 

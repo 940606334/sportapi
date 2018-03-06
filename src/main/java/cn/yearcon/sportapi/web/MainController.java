@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class MainController {
     private BillService billService;
 
     @ApiOperation(value = "获取账单信息列表", notes = "根据vipid获取")
-    @RequestMapping("/retail.list")
+    @RequestMapping(value = "/retail.list",method = {RequestMethod.GET,RequestMethod.POST})
     public JsonResult billList(Integer vipid){
         if(vipid==null){
             logger.debug("请输入vipid");
@@ -43,29 +44,11 @@ public class MainController {
     }
     @Autowired
     private VipInfoService vipInfoService;
-    @ApiOperation(value = "获取用户信息", notes = "根据vipid获取")
-    @RequestMapping("/user.detail")
-    public JsonResult vipInfo(Integer vipid){
-        if(vipid==null){
-            logger.debug("请输入vipid");
-            return new JsonResult(0,"请输入vipid");
-        }
-        JsonResult jsonResult=vipInfoService.findById(vipid);
-        logger.info(jsonResult.toString());
-        return jsonResult;
-    }
-    @ApiOperation(value = "修改会员信息", notes = "根据vipid修改")
-    @RequestMapping("/user.edit")
-    public JsonResult editInfo(Integer vipid,String name,String sex,String building,String password){
-        JsonResult jsonResult=vipInfoService.update(vipid,name,sex,building,password);
-        logger.info(jsonResult.toString());
-        return jsonResult;
-    }
     @Autowired
     private StoreService storeService;
 
     @ApiOperation(value = "获取店铺列表", notes = "根据机构id和坐标信息")
-    @RequestMapping("store.list")
+    @RequestMapping(value = "store.list",method = {RequestMethod.GET,RequestMethod.POST})
     public JsonResult storeList(String webid,String coordinate){
         if(webid==null||"".equals(webid)){
             logger.debug("请输入机构id");
@@ -85,14 +68,9 @@ public class MainController {
         }
         return jsonResult;
     }
-    @ApiOperation(value = "获取vipid", notes = "根据手机号获取")
-    @RequestMapping(value = "user.id")
-    public JsonResult findVipidByMobile(String mobile){
-        JsonResult jsonResult=vipInfoService.findByMobile(mobile);
-        return  jsonResult;
-    }
+
     @ApiOperation(value = "获取积分想详情", notes = "根据vipid获取")
-    @RequestMapping(value="integral.list")
+    @RequestMapping(value="integral.list",method = {RequestMethod.GET,RequestMethod.POST})
     public JsonResult findIntegralList(Integer vipid){
 
         JsonResult jsonResult=vipInfoService.findIntegralList(vipid);
@@ -100,7 +78,7 @@ public class MainController {
         return jsonResult;
     }
     @ApiOperation(value = "获取积分余额", notes = "根据vipid获取余额")
-    @RequestMapping(value="integral.num")
+    @RequestMapping(value="integral.num",method = {RequestMethod.GET,RequestMethod.POST})
     public JsonResult findIntegralByVipid(Integer vipid){
 
         JsonResult jsonResult=vipInfoService.findIntegralByVipid(vipid);
@@ -108,25 +86,8 @@ public class MainController {
         return jsonResult;
     }
 
-    /**
-     * 注册会员
-     * @param mobile
-     * @param name
-     * @param sex
-     * @param birthday
-     * @param storeid
-     * @param password
-     * @return
-     */
-    @ApiOperation(value = "注册会员", notes = "注册会员")
-    @RequestMapping(value="user.reg")
-    public JsonResult insertVipInfo(String checkcode,String mobile,String name,String sex,Integer birthday,Integer storeid,String password){
-        JsonResult jsonResult=vipInfoService.insertVip(mobile,name,sex,birthday,storeid,password,checkcode);
-        logger.info(jsonResult.toString());
-        return jsonResult;
-    }
     @ApiOperation(value = "获取优惠券列表", notes = "根据vipid获取优惠券")
-    @RequestMapping(value="voucher.list")
+    @RequestMapping(value="voucher.list",method = {RequestMethod.GET,RequestMethod.POST})
     public JsonResult findCupon(Integer vipid){
         JsonResult jsonResult=vipInfoService.findCoupon(vipid);
         logger.info(jsonResult.toString());
@@ -135,20 +96,11 @@ public class MainController {
     @Autowired
     private SmsCodeService smsCodeService;
     @ApiOperation(value = "获取短信验证码", notes = "输入手机号获取短信验证码")
-    @RequestMapping(value="code.get")
+    @RequestMapping(value="code.get",method = {RequestMethod.GET,RequestMethod.POST})
     public JsonResult getCheckCode(String mobile){
         JsonResult jsonResult=smsCodeService.getCheckCode(mobile);
         logger.info(jsonResult.toString());
         return jsonResult;
     }
 
-    /**
-     * 会员认证
-     * @return
-     */
-    @ApiOperation(value = "会员认证", notes = "根据vipid修改会员认证状态")
-    @RequestMapping(value = "vip.authorize")
-    public JsonResult authorizeVip(Integer vipid){
-       return vipInfoService.updateAuthorize(vipid);
-    }
 }
