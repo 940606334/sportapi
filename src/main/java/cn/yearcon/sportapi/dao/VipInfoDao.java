@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * 获取会员详情
- *
+ *  调用存储过程
  * @author itguang
  * @create 2018-01-07 13:37
  **/

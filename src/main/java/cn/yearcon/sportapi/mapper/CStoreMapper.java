@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * sql查询店铺
+ */
 public interface CStoreMapper {
     @Select("SELECT a.id,\n" +
             "  a.name,\n" +

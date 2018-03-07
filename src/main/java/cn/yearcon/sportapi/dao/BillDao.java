@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * 获取账单信息
- *
+ *  调用存储过程
  * @author itguang
  * @create 2018-01-02 11:03
  **/

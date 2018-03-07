@@ -9,6 +9,9 @@ import org.apache.ibatis.annotations.Update;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * sql查会员信息
+ */
 public interface VipMapper {
     @Select("SELECT t.id\n" +
             "FROM c_vip t\n" +

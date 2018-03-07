@@ -10,6 +10,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface RefCursorDao  extends CrudRepository<RefCursor, Integer> {
-    @Procedure(name="ref_cursor")
+    @Procedure(name="yek_vip_retailftp")
     List<RefCursor> findById(@Param("v_vip_id") Integer id);
 }

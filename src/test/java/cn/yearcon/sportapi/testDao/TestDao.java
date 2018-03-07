@@ -1,7 +1,9 @@
 package cn.yearcon.sportapi.testDao;
 
+import cn.yearcon.sportapi.Repository.RefCursorDao;
 import cn.yearcon.sportapi.dao.BillDao;
 import cn.yearcon.sportapi.dao.VipInfoDao;
+import cn.yearcon.sportapi.entity.RefCursor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +34,17 @@ public class TestDao {
         /*Integer i=vipInfoDao.updateInfo(389856,"ayong","M",null,"123456");
         System.out.println(i);*/
     }
-
+    @Autowired
+    RefCursorDao refCursorDao;
     @Test
     public void testBill(){
-        List list=billDao.findByVipid(150);
+       // List list=billDao.findByVipid(389853);
+        //System.out.println(list);
+       /* List<RefCursor> byId = refCursorDao.findById(389853);
+        System.out.println(byId);*/
+         List list=billDao.findByVipid(376957);
         System.out.println(list);
+
     }
 
     @Test

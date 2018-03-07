@@ -25,7 +25,7 @@ import java.util.List;
  * @create 2018-01-02 15:10
  **/
 @RestController
-@Api(description = "ERP接口")
+@Api(description = "ERP接口(短信,账单,店铺,优惠券)")
 public class MainController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
@@ -69,22 +69,7 @@ public class MainController {
         return jsonResult;
     }
 
-    @ApiOperation(value = "获取积分想详情", notes = "根据vipid获取")
-    @RequestMapping(value="integral.list",method = {RequestMethod.GET,RequestMethod.POST})
-    public JsonResult findIntegralList(Integer vipid){
 
-        JsonResult jsonResult=vipInfoService.findIntegralList(vipid);
-        logger.info(jsonResult.toString());
-        return jsonResult;
-    }
-    @ApiOperation(value = "获取积分余额", notes = "根据vipid获取余额")
-    @RequestMapping(value="integral.num",method = {RequestMethod.GET,RequestMethod.POST})
-    public JsonResult findIntegralByVipid(Integer vipid){
-
-        JsonResult jsonResult=vipInfoService.findIntegralByVipid(vipid);
-        logger.info(jsonResult.toString());
-        return jsonResult;
-    }
 
     @ApiOperation(value = "获取优惠券列表", notes = "根据vipid获取优惠券")
     @RequestMapping(value="voucher.list",method = {RequestMethod.GET,RequestMethod.POST})

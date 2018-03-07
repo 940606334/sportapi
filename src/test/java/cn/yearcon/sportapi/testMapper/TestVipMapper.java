@@ -1,5 +1,6 @@
 package cn.yearcon.sportapi.testMapper;
 
+import cn.yearcon.sportapi.dao.IntegralDao;
 import cn.yearcon.sportapi.entity.Integral;
 import cn.yearcon.sportapi.mapper.VipMapper;
 import org.junit.Test;
@@ -32,5 +33,18 @@ public class TestVipMapper {
             System.out.println(integer);
         }
     }
-
+    @Test
+    public void testFindIntegral(){
+        String integral = vipMapper.findIntegralByVipid(389856);
+        System.out.println(integral);
+    }
+    @Autowired
+    private IntegralDao integralDao;
+    @Test
+    public void testChangeIntegral(){
+        /*String msg=integralDao.costIntegral(389856,"测试",-10,"RE1710190005654");
+        System.out.println(msg);*/
+        Integer code=integralDao.addIntegral(389856,10,"测试");
+        System.out.println(code);
+    }
 }
