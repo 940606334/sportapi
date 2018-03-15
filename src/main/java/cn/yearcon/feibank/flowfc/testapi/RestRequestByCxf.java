@@ -74,6 +74,35 @@ public class RestRequestByCxf {
 		return printResult("开卡完成", response);
 	}
 
+	/**
+	 * 短信开卡请求
+	 *
+	 * @return
+	 * @throws IOException
+	 */
+	public static JsonNode sendAreaUser(String mobile,String content) throws IOException {
+		WebClient client = createClient(url);
+
+		client.type("application/json;charset=UTF-8");
+		String tradeNo = AESUtil.getTradeNo();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("tradeNo", tradeNo);// 必填参数
+		parameters.put("userName", userName);// 必填参数
+		parameters.put("userPassword", userPass);// 必填参数
+
+		parameters.put("phones", mobile);
+		parameters.put("content", content);
+		parameters.put("etnumber", "");
+		String sign = AESUtil.encrypt(objectMapper.writeValueAsString(parameters),key);
+		parameters.put("sign", sign);
+
+		parameters.put("userPassword",AESUtil.MD5(userPass));// 必填参数
+		String body = objectMapper.writerWithDefaultPrettyPrinter()
+				.writeValueAsString(parameters);
+		printJsonString("开卡请求", body);
+		Response response = client.post(body);
+		return printResult("开卡完成", response);
+	}
 	
 
 

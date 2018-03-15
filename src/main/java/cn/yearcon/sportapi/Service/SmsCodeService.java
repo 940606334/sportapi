@@ -40,7 +40,7 @@ public class SmsCodeService {
         }
         try {
             RestRequestByCxf.openCard(mobile,checkcode);
-            System.out.println("短信验证码设置缓存10分钟");
+            System.out.println("短信验证码设置缓存30分钟");
             stringRedisTemplate.opsForValue().set("smscodeMobile="+mobile,checkcode,60*30, TimeUnit.SECONDS);
             return new JsonResult(1,checkcode);
         } catch (IOException e) {
@@ -62,4 +62,25 @@ public class SmsCodeService {
         }
         return str.toString();
     }
+
+    /**
+     * 发送短信给区域负责人
+     * @param mobile
+     * @return
+     */
+    public JsonResult sendAreaUser(String mobile,String content){
+        if(mobile==null ||"".equals(mobile)){
+            return new JsonResult(0,"请输入手机号");
+        }
+        try {
+            RestRequestByCxf.sendAreaUser(mobile,content);
+            return new JsonResult(1,"发送成功");
+        }catch (IOException e){
+            e.printStackTrace();
+            return new JsonResult(0,e.getMessage());
+        }
+
+    }
+
+
 }

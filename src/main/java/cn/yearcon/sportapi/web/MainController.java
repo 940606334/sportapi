@@ -61,7 +61,7 @@ public class MainController {
         List<CStore> list=storeService.getStoreList(webid,coordinate);
         logger.info(list.toString());
         JsonResult jsonResult=null;
-        if (list==null){
+        if (list==null||list.size()==0){
             jsonResult=new JsonResult(0,"无相关店铺");
         }else{
             jsonResult=new JsonResult(1,list);
@@ -84,6 +84,13 @@ public class MainController {
     @RequestMapping(value="code.get",method = {RequestMethod.GET,RequestMethod.POST})
     public JsonResult getCheckCode(String mobile){
         JsonResult jsonResult=smsCodeService.getCheckCode(mobile);
+        logger.info(jsonResult.toString());
+        return jsonResult;
+    }
+    @ApiOperation(value = "发送短信消息", notes = "输入手机号")
+    @RequestMapping(value="sms.send",method = {RequestMethod.GET,RequestMethod.POST})
+    public JsonResult sendAreaUser(String mobile,String content){
+        JsonResult jsonResult=smsCodeService.sendAreaUser(mobile,content);
         logger.info(jsonResult.toString());
         return jsonResult;
     }
